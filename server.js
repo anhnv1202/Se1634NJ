@@ -15,10 +15,20 @@ app.get("/", (req, res) => {
 app.use('/users',userRouter)
 app.use('/product',productRouter)
 
-const port = process.env.PORT || 8080
-app.listen(port,()=>{
-    console.log(`Server is running on Port ${port}`)
-})
+const port = process.env.PORT || 8080;
+
+connect(
+  process.env.MONGO_URI
+)
+  .then(() => {
+    console.log("Connect to MongoDB successfully");
+    app.listen(port, () => {
+      console.log("Server is running at port 9999");
+    });
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
 
 // app.post("/products",async (req,res)=>{
 //     try {
@@ -55,15 +65,3 @@ app.listen(port,()=>{
 //Listen on port number: 9999
 
 //Connect to mongoDB
-// connect(
-//   "mongodb+srv://dunglthe161513:Conyeume123.@cluster0.qyqh7ya.mongodb.net/?retryWrites=true&w=majority"
-// )
-//   .then(() => {
-//     console.log("Connect to MongoDB successfully");
-//     app.listen(9999, () => {
-//       console.log("Server is running at port 9999");
-//     });
-//   })
-//   .catch((err) => {
-//     console.log(err.message);
-//   });

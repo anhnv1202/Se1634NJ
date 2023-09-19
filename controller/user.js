@@ -28,25 +28,30 @@ const login = async (req, res) => {
 };
 //18/9/2023
 const register = async (req, res) => {
-  try{
+  try {
     const errors = validationResult(req.body);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ error: errors.array() });
-  }
-  }catch(error){
+    console.log(errors);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ error: errors.array() });
+    }
 
-  }
-  
-  //detrcutoring object
-  const { 
-    name,
-     email, 
-     password, 
-     phoneNumber, 
-     address 
+    const { 
+      name,
+      email, 
+      password, 
+      phoneNumber, 
+      address 
     } = req.body;
-  userRepository.register({ name, email, password, phoneNumber, address })
-}
+
+    const newUser = await userRepository.register({ name, email, password, phoneNumber, address });
+
+    // Rest of your controller logic
+
+    res.status(200).json({ message: newUser });
+  } catch (error) {
+    return res.status(400).json({ error: error.message });
+  }
+};
 
 export default {
   getAllUser,

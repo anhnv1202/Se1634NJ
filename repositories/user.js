@@ -1,5 +1,5 @@
-import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
+import {User} from "../models/User.js";
 const userRepository = {
   getUserById: async (userId) => {
     try {
@@ -17,16 +17,25 @@ const login = ({ email, password }) => {
 
 const register = async ({ name, email, password, phoneNumber, address }) => {
   const userExisting = await User.findOne({ email }).exec();
+  console.log(userExisting);
   if (userExisting) {
-    throw new Error("User already exists");
+    throw new Error("Email đã tồn tại");
   }
-  //Mã hóa mật khẩu
-  const hashPassword = await bcrypt.hash(
-    password,
-    parseInt(process.env.SECRET_KEY)
-  );
-  // Create a new user
 
+  // Tạo key bí mật (secret key)
+  const secretKey = "YourSecretKey"; // Thay đổi thành key thực tế của bạn
+
+  // Kết hợp key với mật khẩu
+  const passwordWithKey = password + secretKey;
+
+  // Tạo muối để mã hóa
+  const saltRounds = 10; // Bạn có thể điều chỉnh số vòng lặp tùy theo nhu cầu bảo mật
+  const salt = await bcrypt.genSalt(saltRounds);
+
+  // Mã hóa mật khẩu kết hợp với key
+  const hashPassword = await bcrypt.hash(passwordWithKey, salt);
+
+  // Tạo người dùng mới
   const newUser = await User.create({
     name,
     email,
@@ -34,9 +43,8 @@ const register = async ({ name, email, password, phoneNumber, address }) => {
     phoneNumber,
     address,
   });
-  // Save the user to the database
 
-  // Optionally, you can return the newly created user object
+  // Tuỳ chọn, bạn có thể trả về đối tượng người dùng mới được tạo
   return newUser;
 };
 

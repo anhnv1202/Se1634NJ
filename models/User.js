@@ -1,9 +1,8 @@
-import mongoose, { ObjectId } from "mongoose";
+import mongoose, { ObjectId, Schema }  from "mongoose";
 import validator from "validator/lib/isEmail.js";
 //18/9/2023
-const User = mongoose.model(
-  "User",
-  new Schema({
+export const User = mongoose.model(
+  "User", new Schema({
     id: { type: ObjectId },
     //model validation
     name: {
@@ -18,13 +17,13 @@ const User = mongoose.model(
       type: String,
       require: true,
       validate: {
-        validator:(value)=>value.isEmail(),
+        validator:(value)=>value.isEmail,
         message: "Incorrect format"
       }
     },
     phoneNumber: {
       type: String,
-      reuqire: true,
+      require: true,
     },
     address: {
       type: String,
